@@ -13,11 +13,12 @@ static const unsigned int fontsize  = 20;
 
 static const unsigned int borderpx    = 0;        /* border pixel of windows */
 static const unsigned int textmargin  = 15;       /* margin for the text displayed on the bar */
-static bool showbar                   = true;     /* false means no bar */
+static bool showbar                   = false;    /* false means no bar */
 static bool topbar                    = true;     /* false means bottom bar */
 static bool showclock                 = true;     /* false means no clock */
-static bool showutcclock              = true;     /* false means no utc clock */
+static bool showutcclock              = false;    /* false means no utc clock */
 static bool showexploreronstart       = false;    /* false means do not show explorer/task bar on start */
+static bool showBattery               = true;     /* false means do not show battery status in the bar */
 
 /* tagging */
 static const wchar_t tags[][MAXTAGLEN] = { L"1", L"2", L"3", L"4", L"5", L"6", L"7", L"8", L"9" };
@@ -40,11 +41,11 @@ static Rule rules[] = {
     { L"OpusApp",                            NULL,                  NULL,               0,          false,          true }, /* Word */
     { NULL,                                  L"OneNote",            NULL,               0,          false,          true }, /* OneNote */
     { NULL,                                  L"Snip & Sketch",      NULL,               0,          true,           true },
-    { L"Chrome_WidgetWin_1",                 L"Google Chrome",      NULL,               0,          false,          true },
     { L"Chrome_WidgetWin_1",                 L"Visual Studio Code", NULL,               0,          false,          true },
     { NULL,                                  L"vimrun.exe",         NULL,               0,          true,           true },
-    { NULL,                                  NULL,                  L"Spyglass.exe",               0,          true,           true }, /* https://github.com/a5huynh/spyglass */
+    { NULL,                                  NULL,                  L"Spyglass.exe",    0,          true,           true }, /* https://github.com/a5huynh/spyglass */
     { L"TaskManagerWindow",                  NULL,                  NULL,               0,          true,           true },
+    { L"Chrome_WidgetWin_1",                 L"Microsoft\0x200b Edge",      NULL,               1 << 8,          false,          true },
 };
 
 /* layout(s) */
@@ -57,14 +58,14 @@ static float mfact      = 0.55; /* factor of master area size [0.05..0.95] */
 
 static Layout layouts[] = {
     /* symbol     arrange function */
-    { L"[]=",      tile },    /* first entry is default */
-    { L"><>",      NULL },    /* no layout function means floating behavior */
+    { L"[T]",      tile },    /* first entry is default */
+    { L"[F]",      NULL },    /* no layout function means floating behavior */
     { L"[M]",      monocle },
-    { L"TTT",      bstack },
-    { L"###",      gaplessgrid },
-    { L"+++",      grid },
-    { L"(@)",      spiral },
-    { L"[\\]",     dwindle },
+    { L"[B]",      bstack },
+    { L"[GG]",     gaplessgrid },
+    { L"[G]",      grid },
+    { L"[S]",      spiral },
+    { L"[D]",      dwindle },
 };
 
 /* key definitions */
@@ -75,7 +76,7 @@ static Layout layouts[] = {
     { MODKEY|MOD_SHIFT,             KEY,      tag,            {.ui = 1 << TAG} }, \
     { MODKEY|MOD_CONTROL|MOD_SHIFT, KEY,      toggletag,      {.ui = 1 << TAG} },
 
-static wchar_t clockfmt[] = L"%m/%d/%Y %a %H:%M";
+static wchar_t clockfmt[] = L"%d/%m/%Y %a %H:%M";
 static int clock_interval = 15000;
 
 /* helper for spawning shell commands in the pre dwm-5.0 fashion */
